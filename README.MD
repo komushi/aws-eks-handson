@@ -401,7 +401,7 @@ $ kubectl get service
 
 ## 7-2. Delete the EKSCTL Cluster
 ```
-$ eksctl delete cluster --name=eksworkshop-eksctl
+$ eksctl delete cluster --name=eksworkshop-eksctl --region=us-east-1
 ```
 
 # Credit: [Amazon EKS Workshop](https://eksworkshop.com/)
