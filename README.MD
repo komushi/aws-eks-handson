@@ -3,11 +3,12 @@
 # 0. Prerequsite
 ## 0-1. Clone this repo
 ```
-$ git clone thisthis
+$ git clone https://github.com/komushi/aws-eks-handson
 ```
 
 ## 0-2. Clone the Service Repos
 ```
+$ mkdir environment
 $ cd ./environment
 $ git clone https://github.com/brentley/ecsdemo-nodejs.git
 $ git clone https://github.com/brentley/ecsdemo-crystal.git
@@ -43,6 +44,7 @@ $ eksctl create cluster --name=eksworkshop-eksctl --nodes=3 --node-ami=auto --re
 
 **Check ~/.kube/config after cluster creation**
 ```
+$ cat  ~/.kube/config
 ```
 
 ## 1-2. Test the cluster
