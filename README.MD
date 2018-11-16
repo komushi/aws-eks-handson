@@ -253,7 +253,7 @@ NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
 ecsdemo-nodejs    ClusterIP   10.100.236.34    <none>        80/TCP    1h
 ```
 
-## 3-3. Scale the NodeJS Backend API by deploymeny.yaml
+## 3-3. Scale the NodeJS Backend API by deployment.yaml
 **Edit the deployment.yaml**
 **Set the nodejs deployment replica to 3**
 ```
@@ -373,8 +373,17 @@ ecsdemo-frontend   3         3         3            3           1h
 ecsdemo-nodejs     3         3         3            3           1h
 ```
 
-# 7. Cleanup
-## 7-1. Undeploy the applications
+# 7. Apply NGINX Ingress Controller for the Frontend
+## 7-1. Install NGINX Ingress Controller for AWS
+
+## 7-2. Compose ingress.yaml of the Frontend
+
+## 7-3. Edit service.yaml of the Frontend
+
+## 7-4. Apply and test with Ingress
+
+# 8. Cleanup
+## 8-1. Undeploy the applications
 ```
 $ cd ./environment/ecsdemo-frontend
 $ kubectl delete -f kubernetes/service.yaml
@@ -401,9 +410,10 @@ $ kubectl get deployment
 $ kubectl get service
 ```
 
-## 7-2. Delete the EKSCTL Cluster
+## 8-2. Delete the EKSCTL Cluster
 ```
 $ eksctl delete cluster --name=eksworkshop-eksctl --region=us-east-1
 ```
 
 # Credit: [Amazon EKS Workshop](https://eksworkshop.com/)
+# Credit: [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws)
