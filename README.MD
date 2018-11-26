@@ -105,7 +105,7 @@ $ kubectl proxy --port=8888 --address='0.0.0.0' --disable-filter=true &
 ```
 
 ## 2-4. Check the API
-[API URL](http://localhost:8080/)
+[API URL](http://localhost:8888/)
 ```
 {
   "paths": [
@@ -359,7 +359,7 @@ ecsdemo-nodejs     ClusterIP      10.100.236.34    <none>        80/TCP         
 ```
 
 # 6. Use the application and check scalability and high-availability
-## 6-1. Open the URL from 5-1
+## 6-1. Open the URL from 5-1 「Check the service」
 [elb-aname](http://elb-aname)
 
 ## 6-2. Scale the Crystal Backend API
