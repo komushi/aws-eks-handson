@@ -37,14 +37,22 @@ aws iam get-role --role-name "AWSServiceRoleForElasticLoadBalancing" || aws iam 
 
 # 1. Create an EKS cluster
 ## 1-1. Create a cluster by eksctl
-**cluster-id:eksworkshop-eksctl**
+**cluster-id:eks-workshop**
 ```
-$ eksctl create cluster --name=eksworkshop-eksctl --nodes=3 --node-ami=auto --region=us-east-1
+$ eksctl create cluster --name=eks-workshop --nodes=3 --node-ami=auto --region=us-east-2
+
+$ eksctl create cluster --name=eks-workshop --nodes=3 --node-ami=auto --region=us-east-1 --zones=us-east-1a,us-east-1b,us-east-1c
+
 ```
 
 **Check ~/.kube/config after cluster creation**
 ```
 $ cat  ~/.kube/config
+```
+
+**If no value retrieve it**
+```
+$ eksctl utils write-kubeconfig --name=eks-workshop --region=us-east-2
 ```
 
 ## 1-2. Test the cluster
@@ -93,7 +101,7 @@ $ kubectl get all -n default
 
 ## 2-3. Start a local proxy to connect to EKS
 ```
-$ kubectl proxy --port=8080 --address='0.0.0.0' --disable-filter=true &
+$ kubectl proxy --port=8888 --address='0.0.0.0' --disable-filter=true &
 ```
 
 ## 2-4. Check the API
@@ -173,14 +181,14 @@ $ kubectl proxy --port=8080 --address='0.0.0.0' --disable-filter=true &
 ```
 
 ## 2-5. Generate the token for the dashboard
-**Use 'eksworkshop-eksctl' as the cluster-id which was the cluster name created at 1-1.**
+**Use 'eks-workshop' as the cluster-id which was the cluster name created at 1-1.**
 ```
-$ heptio-authenticator-aws token -i eksworkshop-eksctl
+$ heptio-authenticator-aws token -i eks-workshop
 {"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/v1alpha1","spec":{},"status":{"token":"k8s-aws-v1.aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8_QWN0aW9uPUdldENhbGxlcklkZW50aXR5JlZlcnNpb249MjAxMS0wNi0xNSZYLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFKSUczWVRHS1pRTE5NUFBRJTJGMjAxODEwMTglMkZ1cy1lYXN0LTElMkZzdHMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDE4MTAxOFQwMzEyMjdaJlgtQW16LUV4cGlyZXM9NjAmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JTNCeC1rOHMtYXdzLWlkJlgtQW16LVNpZ25hdHVyZT1jZDJhNjJhMzZiNjhjMGU4YWFmNmMzZTFhMzAzMWUzN2ZlMDA2ZTNkN2M1MTA1N2Y3MjJlZDQwYzdjYTIzY2Uy"}}
 ```
 
 ## 2-6. Access the dashboard
-[Dashboard URL](http://localhost:8080/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/)
+[Dashboard URL](http://localhost:8888/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/)
 
 **Use the token created in 2-5 to access the dashboard**
 
@@ -373,7 +381,8 @@ ecsdemo-frontend   3         3         3            3           1h
 ecsdemo-nodejs     3         3         3            3           1h
 ```
 
-# 7. Apply NGINX Ingress Controller for the Frontend
+# 7. Apply NGINX CLB Ingress Controller for the Frontend
+**TODO move CLB to another MD**
 ## 7-1. Install NGINX Ingress Controller for AWS
 
 ## 7-2. Compose ingress.yaml of the Frontend
@@ -412,8 +421,12 @@ $ kubectl get service
 
 ## 8-2. Delete the EKSCTL Cluster
 ```
-$ eksctl delete cluster --name=eksworkshop-eksctl --region=us-east-1
+$ eksctl delete cluster --name=eks-workshop --region=us-east-2
 ```
 
 # Credit: [Amazon EKS Workshop](https://eksworkshop.com/)
 # Credit: [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws)
+
+https://medium.com/@sevcsik/authentication-using-https-client-certificates-3c9d270e8326
+
+https://qiita.com/sheepland/items/37ece5800eb6972ffd91
