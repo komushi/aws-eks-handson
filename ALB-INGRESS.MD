@@ -99,7 +99,91 @@ TODO
 ### 1-2-1. 
 
 # 2. Deploy workload resource
-## 2-1. 
+## 2-1. Download the echoserver example to local
+```
+$ mkdir environment
+$ cd ./environment
+$ git clone --depth=1 --branch=master https://github.com/kubernetes-sigs/aws-alb-ingress-controller.git && rm -rf aws-alb-ingress-controller/.git
+```
+
+## 2-2. Deploy echoserver namespace, service and deployment
+```
+kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-namespace.yaml
+kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-service.yaml
+kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-deployment.yaml
+```
+
+**Check the namespace**
+```
+$ kubectl get namespaces
+NAME          STATUS   AGE
+default       Active   5d
+echoserver    Active   7m
+kube-public   Active   5d
+kube-system   Active   5d
+```
+
+**Check the deployments and services**
+```
+$ kubectl get deploy,svc -n echoserver
+NAME                               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/echoserver   1         1         1            1           6m
+
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/echoserver   ClusterIP   10.100.163.143   <none>        80/TCP    7m
+```
+
+## 2-3. Deploy ingress for echoserver
+## 2-3-1. Edit ingress yaml
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: echoserver
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=test
+spec:
+  rules:
+    - host: echoserver.example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: echoserver
+              servicePort: 80
+
+```
+
+
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: echoserver
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=test
+    alb.ingress.kubernetes.io/subnets: subnet-05283673e532fe465,subnet-0704cc62bcfe683c4,subnet-0ebb05f1f5ce1d130
+spec:
+  rules:
+    - host: echoserver.xulei.app
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: echoserver
+              servicePort: 80
+```
+
+### 2-3-2. deployment
+```
+kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
+```
 
 ----------------------
 # Delete chart alb-ingress-controller-helm
