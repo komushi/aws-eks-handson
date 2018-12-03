@@ -10,9 +10,9 @@ $ git clone https://github.com/komushi/aws-eks-handson
 ```
 $ mkdir environment
 $ cd ./environment
-$ git clone https://github.com/brentley/ecsdemo-nodejs.git
-$ git clone https://github.com/brentley/ecsdemo-crystal.git
-$ git clone https://github.com/brentley/ecsdemo-frontend.git
+$ git clone --depth=1 --branch=master https://github.com/brentley/ecsdemo-nodejs.git && rm -rf ecsdemo-nodejs/.git
+$ git clone --depth=1 --branch=master https://github.com/brentley/ecsdemo-crystal.git && rm -rf ecsdemo-crystal/.git
+$ git clone --depth=1 --branch=master https://github.com/brentley/ecsdemo-frontend.git && rm -rf ecsdemo-frontend/.git
 ```
 
 ## 0-3. Install/Upgrade kubectl
@@ -359,8 +359,8 @@ ecsdemo-nodejs     ClusterIP      10.100.236.34    <none>        80/TCP         
 ```
 
 # 6. Use the application and check scalability and high-availability
-## 6-1. Open the URL from 5-1 「Check the service」
-[elb-aname](http://elb-aname)
+## 6-1. Check the demo app on browser
+[URL_FROM_5-1](http://)
 
 ## 6-2. Scale the Crystal Backend API
 ```
@@ -381,18 +381,8 @@ ecsdemo-frontend   3         3         3            3           1h
 ecsdemo-nodejs     3         3         3            3           1h
 ```
 
-# 7. Apply NGINX CLB Ingress Controller for the Frontend
-**TODO move CLB to another MD**
-## 7-1. Install NGINX Ingress Controller for AWS
-
-## 7-2. Compose ingress.yaml of the Frontend
-
-## 7-3. Edit service.yaml of the Frontend
-
-## 7-4. Apply and test with Ingress
-
-# 8. Cleanup
-## 8-1. Undeploy the applications
+# 7. Cleanup
+## 7-1. Undeploy the applications
 ```
 $ cd ./environment/ecsdemo-frontend
 $ kubectl delete -f kubernetes/service.yaml
@@ -419,7 +409,7 @@ $ kubectl get deployment
 $ kubectl get service
 ```
 
-## 8-2. Delete the EKSCTL Cluster
+## 7-2. Delete the EKSCTL Cluster
 ```
 $ eksctl delete cluster --name=eks-workshop --region=us-east-2
 ```

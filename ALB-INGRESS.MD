@@ -1,159 +1,52 @@
 # 1. Apply NGINX ALB Ingress Controller for the Frontend
-## 1-1. Option 1 install with Helm
-### 1-1-1. Install and initialize Helm
-[Install and initialize Helm](HELM.MD)
-
-### 1-1-2. Install chart alb-ingress-controller-helm
-```
-$ helm registry install quay.io/coreos/alb-ingress-controller-helm --namespace kube-system --name=alb-ingress -f alb-ingress/values.yaml
-NAME:   alb-ingress
-LAST DEPLOYED: Wed Nov 21 15:00:04 2018
-NAMESPACE: kube-system
-STATUS: DEPLOYED
-
-RESOURCES:
-==> v1beta1/Deployment
-NAME                                           AGE
-alb-ingress-alb-ingress-controller-controller  1s
-
-==> v1/Pod(related)
-
-NAME                                                            READY  STATUS             RESTARTS  AGE
-alb-ingress-alb-ingress-controller-controller-64d4546948-zr4br  0/1    ContainerCreating  0         1s
-
-==> v1/ServiceAccount
-
-NAME                                AGE
-alb-ingress-alb-ingress-controller  1s
-
-==> v1beta1/ClusterRole
-alb-ingress-alb-ingress-controller  1s
-
-==> v1beta1/ClusterRoleBinding
-alb-ingress-alb-ingress-controller  1s
-
-
-NOTES:
-To verify that alb-ingress-controller has started, run:
-
-  kubectl --namespace=kube-system get pods -l "app=alb-ingress-controller,component=controller,release=alb-ingress"
-
-An example Ingress that makes use of the controller:
-
-  apiVersion: extensions/v1beta1
-  kind: Ingress
-  metadata:
-    annotations:
-      kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/security-groups: sg-723a380a,sg-a6181ede,sg-a5181edd
-      alb.ingress.kubernetes.io/subnets: subnet-a4f0098e,subnet-457ed533,subnet-95c904cd
-    name: example
-    namespace: foo
-  spec:
-    rules:
-      - host: www.example.com
-        http:
-          paths:
-            - path: /
-              backend:
-                serviceName: exampleService
-                servicePort: 80
-
-
-```
-
-**Check the release by Helm**
-```
-$ helm list
-NAME        REVISION  UPDATED                   STATUS    CHART                             APP VERSION NAMESPACE  
-alb-ingress 1         Wed Nov 21 15:37:12 2018  DEPLOYED  alb-ingress-controller-helm-0.1.3 v1.0.0      kube-system
-```
-
-**Check the ServiceAccount, the ClusterRoleBinding and the ClusterRole**
-```
-$ kubectl get clusterrole -n=kube-system
-$ kubectl get clusterrolebinding -n=kube-system
-$ kubectl get serviceaccount -n=kube-system
-```
-
-**Check the deployment was successful and the controller started**
-```
-$ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
--------------------------------------------------------------------------------
-AWS ALB Ingress controller
-  Release:    v1.0.0
-  Build:      git-6ee1276
-  Repository: https://github.com/kubernetes-sigs/aws-alb-ingress-controller
--------------------------------------------------------------------------------
-```
-
-**Check the status of the alb-ingress-controller pod**
-```
-$ kubectl --namespace=kube-system get pods -l "app=alb-ingress-controller,component=controller,release=alb-ingress"
-NAME                                                             READY   STATUS    RESTARTS   AGE
-alb-ingress-alb-ingress-controller-controller-64d4546948-922bg   1/1     Running   0          11m
-```
-
-## 1-2. Option 2 install with Kubectl
-### 1-2-1. Download aws-alb-ingress-controller to local
+## 1-1. Download aws-alb-ingress-controller to local
 ```
 $ mkdir environment
 $ cd ./environment
 $ git clone --depth=1 --branch=master https://github.com/kubernetes-sigs/aws-alb-ingress-controller.git && rm -rf aws-alb-ingress-controller/.git
 ```
 
-### 1-2-2. Edit alb-ingress-controller.yaml
-*cluster-name
-*AWS_ACCESS_KEY_ID
-*AWS_SECRET_ACCESS_KEY
+## 1-2. Edit alb-ingress-controller.yaml
+* --ingress-class=alb
+* --cluster-name=eks-workshop
 
-### 1-2-3.
+## 1-3. Deploy RBAC(Role-Based Access Control)
 ```
 $ kubectl apply -f aws-alb-ingress-controller/docs/examples/rbac-role.yaml
 ```
 
-****
+**Check ClusterRoleBinding**
 ```
 $ kubectl get clusterrolebinding -n=kube-system
 NAME                                                   AGE
 alb-ingress-controller                                 70s
 ```
 
+**Check ClusterRole**
 ```
 $ kubectl get clusterrole -n=kube-system
 NAME                                                   AGE
 alb-ingress-controller                                                 99s
 ```
 
+**Check ServiceAccount**
 ```
 $ kubectl get serviceaccount -n=kube-system
 NAME                   SECRETS   AGE
 alb-ingress            1         5m
 ```
 
-### 1-2-4.
+## 1-4. Deploy pod alb-ingress-controller to namespace kube-system
 ```
 $ kubectl apply -f aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
 ```
 
 ```
 $ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
-
 ```
 
-```
-$ kubectl delete -f aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
-```
-
-# 2. Deploy workload resource
-## 2-1. Download the echoserver example to local
-```
-$ mkdir environment
-$ cd ./environment
-$ git clone --depth=1 --branch=master https://github.com/kubernetes-sigs/aws-alb-ingress-controller.git && rm -rf aws-alb-ingress-controller/.git
-```
-
-## 2-2. Deploy echoserver namespace, service and deployment
+# 2. Deploy workload resource - sample echoserver
+## 2-1. Deploy echoserver namespace, service and deployment
 ```
 $ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-namespace.yaml
 $ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-service.yaml
@@ -180,8 +73,8 @@ NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
 service/echoserver   ClusterIP   10.100.163.143   <none>        80/TCP    7m
 ```
 
-## 2-3. Deploy ingress for echoserver
-## 2-3-1. Edit ingress yaml
+## 2-2. Deploy ingress for echoserver
+### 2-2-1. Edit ingress yaml
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -205,46 +98,47 @@ spec:
 ```
 
 
-### 2-3-2. Ingress deployment
+### 2-2-2. Ingress deployment
 ```
 $ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
 ```
 
 **Verification**
 ```
-$ kubectl get deploy,svc,ingress -n echoserver
-```
-
-```
 $ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o 'alb-ingress[a-zA-Z0-9-]+') | grep 'echoserver\/echoserver'
-
 ```
 
-
-
-
-# 3. Clean-up
-## 3-1.
 ```
-$ kubectl delete namespace echoserver
+$ kubectl get ingress -n echoserver
+
+NAME         HOSTS   ADDRESS                                                                 PORTS   AGE
+echoserver   *       285c4ac9-echoserver-echose-2ad7-122290727.us-east-2.elb.amazonaws.com   80      3m
 ```
 
-## 3-2. Delete chart alb-ingress-controller-helm
+## 2-3. Check the demo app on browser
+[URL_FROM_2-2-2](http://)
+
+
+# 3. Deploy workload resource - sample 2048
+## 3-1. Deploy 2048 namespace, service and deployment
 ```
-$ helm delete --purge alb-ingress
+$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-namespace.yaml
+$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-deployment.yaml
+$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-service.yaml
 ```
 
-
-----------------------
-# Delete chart alb-ingress-controller-helm
+**Check the namespace**
 ```
-$ helm delete --purge alb-ingress
+$ kubectl get namespaces
 ```
 
+**Check the deployments and services**
+```
+$ kubectl get deploy,svc -n 2048-game
+```
 
-
-----------------
-
+## 3-2. Deploy ingress for 2048
+## 3-2-1. Edit ingress yaml
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -266,26 +160,60 @@ spec:
             backend:
               serviceName: "service-2048"
               servicePort: 80
-
 ```
 
-```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-namespace.yaml
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-deployment.yaml
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-service.yaml
-```
 
-```
-$ kubectl get deploy,svc -n 2048-game
-```
-
+### 3-2-2. Ingress deployment
 ```
 $ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
 ```
 
+**Verification**
 ```
-$ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o 'alb-ingress[a-zA-Z0-9-]+')
+$ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o 'alb-ingress[a-zA-Z0-9-]+') | grep '2048'
 ```
------
 
-[Kubernetes Ingress with AWS ALB Ingress Controller](https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/)
+```
+$ kubectl get ingress -n 2048-game
+NAME           HOSTS   ADDRESS                                                                  PORTS   AGE
+2048-ingress   *       285c4ac9-2048game-2048ingr-6fa0-1267004985.us-east-2.elb.amazonaws.com   80      3m
+```
+
+## 3-3. Check the demo app on browser
+[URL_FROM_3-2-2](http://)
+
+# 4. Clean-up
+## 4-1. Remove echoserver
+### 4-1-1. Remove echoserver ingress and ALB
+```
+$ kubectl delete -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
+```
+
+### 4-1-2. Remove echoserver namespace
+```
+$ kubectl delete namespace echoserver
+```
+
+## 4-2. Remove 2048
+### 4-2-1. Remove echoserver ingress and ALB
+```
+$ kubectl delete -f aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
+```
+
+### 4-2-2. Remove 2048 namespace
+```
+$ kubectl delete namespace 2048-game
+```
+
+## 4-3. Remove alb-ingress-controller related resources
+
+```
+$ kubectl delete -f aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
+```
+
+```
+$ kubectl delete -f aws-alb-ingress-controller/docs/examples/rbac-role.yaml
+```
+
+
+# Credit: [Kubernetes Ingress with AWS ALB Ingress Controller](https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/)

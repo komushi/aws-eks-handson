@@ -1,3 +1,6 @@
+# WIP: Don't use it yet!
+
+
 https://github.com/arun-gupta/istio-kubernetes-aws#apply-default-destination-rules
 
 https://medium.com/@mahesh.rayas/istio-deploy-sample-bookinfo-to-aws-eks-543b59474783
