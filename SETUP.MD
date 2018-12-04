@@ -3,7 +3,7 @@
 # 1. Prerequsite
 ## 1-1. Clone this repo
 ```
-$ git clone https://github.com/komushi/aws-eks-handson
+$ git clone https://gitlab.com/komushi/aws-eks-handson
 ```
 
 ## 1-2. Install/Upgrade kubectl
