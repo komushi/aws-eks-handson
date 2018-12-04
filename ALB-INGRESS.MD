@@ -7,11 +7,7 @@ $ git clone --depth=1 --branch=master https://github.com/kubernetes-sigs/aws-alb
 $ cd ..
 ```
 
-## 1-2. Edit alb-ingress-controller.yaml
-* --ingress-class=alb
-* --cluster-name=eks-workshop
-
-## 1-3. Deploy RBAC(Role-Based Access Control)
+## 1-2. Deploy RBAC(Role-Based Access Control)
 ```
 $ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/rbac-role.yaml
 ```
@@ -37,6 +33,12 @@ NAME                   SECRETS   AGE
 alb-ingress            1         5m
 ```
 
+## 1-3. Edit alb-ingress-controller.yaml
+**environment/aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml**
+
+* --ingress-class=alb
+* --cluster-name=eks-workshop
+
 ## 1-4. Deploy pod alb-ingress-controller to namespace kube-system
 ```
 $ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
@@ -44,6 +46,15 @@ $ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/alb-ingr
 
 ```
 $ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
+```
+
+## 1-5. Create and Attach Instance Role Policy
+```
+$ aws iam create-policy --policy-name AlbIngressControllerPolicy --policy-document file://environment/aws-alb-ingress-controller/docs/examples/iam-policy.json
+
+$ aws iam attach-role-policy --role-name eksctl-eks-workshop-nodegroup-0-NodeInstanceRole-<your_node_instance_role> --policy-arn arn:aws:iam::<your_account_id>:policy/AlbIngressControllerPolicy
+
+$ aws iam attach-role-policy --role-name eksctl-eks-workshop-nodegroup-0-NodeInstanceRole-KLDDOWSB3DC4 --policy-arn arn:aws:iam::042083552617:policy/AlbIngressControllerPolicy
 ```
 
 # 2. Deploy workload resource - sample echoserver
@@ -75,7 +86,17 @@ service/echoserver   ClusterIP   10.100.163.143   <none>        80/TCP    7m
 ```
 
 ## 2-2. Deploy ingress for echoserver
-### 2-2-1. Edit ingress yaml
+### 2-2-1. Get public subnets
+**cluster-id:eks-workshop, region:us-east-1 or us-east-2**
+```
+$ eksctl get cluster eks-workshop --region=us-east-1
+
+$ eksctl get cluster eks-workshop --region=us-east-2
+```
+
+
+### 2-2-2. Edit ingress yaml
+**environment/aws-alb-ingress-controller/docs/examples/echoservices/echoserver-ingress.yaml**
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -99,7 +120,7 @@ spec:
 ```
 
 
-### 2-2-2. Ingress deployment
+### 2-2-3. Ingress deployment
 ```
 $ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
 ```
@@ -139,7 +160,16 @@ $ kubectl get deploy,svc -n 2048-game
 ```
 
 ## 3-2. Deploy ingress for 2048
-## 3-2-1. Edit ingress yaml
+### 3-2-1. Get public subnets
+**cluster-id:eks-workshop, region:us-east-1 or us-east-2**
+```
+$ eksctl get cluster eks-workshop --region=us-east-1
+
+$ eksctl get cluster eks-workshop --region=us-east-2
+```
+
+## 3-2-2. Edit ingress yaml
+**environment/aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml**
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -164,7 +194,7 @@ spec:
 ```
 
 
-### 3-2-2. Ingress deployment
+### 3-2-3. Ingress deployment
 ```
 $ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
 ```
