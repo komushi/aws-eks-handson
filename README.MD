@@ -7,7 +7,7 @@
 * [Clean-up for Basic Setup](/CLEANUP.MD)
 
 
-# Credit: [Amazon EKS Workshop](https://eksworkshop.com/)
-# Credit: [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws)
-# Credit: [Kubernetes Ingress with AWS ALB Ingress Controller](https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/)
-# Credit: [Authentication using HTTPS client certificates](https://medium.com/@sevcsik/authentication-using-https-client-certificates-3c9d270e8326)
+## Credit: [Amazon EKS Workshop](https://eksworkshop.com/)
+## Credit: [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws)
+## Credit: [Kubernetes Ingress with AWS ALB Ingress Controller](https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/)
+## Credit: [Authentication using HTTPS client certificates](https://medium.com/@sevcsik/authentication-using-https-client-certificates-3c9d270e8326)

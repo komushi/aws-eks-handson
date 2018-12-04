@@ -1,3 +1,4 @@
+# WIP: Don't use it yet!
 # 1. Helm Initialization
 
 ## 1-1. Install Helm CLI

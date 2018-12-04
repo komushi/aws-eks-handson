@@ -13,7 +13,7 @@ $ cd ..
 
 ## 1-3. Deploy RBAC(Role-Based Access Control)
 ```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/rbac-role.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/rbac-role.yaml
 ```
 
 **Check ClusterRoleBinding**
@@ -39,7 +39,7 @@ alb-ingress            1         5m
 
 ## 1-4. Deploy pod alb-ingress-controller to namespace kube-system
 ```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
 ```
 
 ```
@@ -49,9 +49,9 @@ $ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ing
 # 2. Deploy workload resource - sample echoserver
 ## 2-1. Deploy echoserver namespace, service and deployment
 ```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-namespace.yaml
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-service.yaml
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-deployment.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-namespace.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-service.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-deployment.yaml
 ```
 
 **Check the namespace**
@@ -101,7 +101,7 @@ spec:
 
 ### 2-2-2. Ingress deployment
 ```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
 ```
 
 **Verification**
@@ -123,9 +123,9 @@ echoserver   *       285c4ac9-echoserver-echose-2ad7-122290727.us-east-2.elb.ama
 # 3. Deploy workload resource - sample 2048
 ## 3-1. Deploy 2048 namespace, service and deployment
 ```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-namespace.yaml
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-deployment.yaml
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-service.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/2048/2048-namespace.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/2048/2048-deployment.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/2048/2048-service.yaml
 ```
 
 **Check the namespace**
@@ -166,7 +166,7 @@ spec:
 
 ### 3-2-2. Ingress deployment
 ```
-$ kubectl apply -f aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
+$ kubectl apply -f environment/aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
 ```
 
 **Verification**
@@ -187,7 +187,7 @@ NAME           HOSTS   ADDRESS                                                  
 ## 4-1. Remove echoserver
 ### 4-1-1. Remove echoserver ingress and ALB
 ```
-$ kubectl delete -f aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
+$ kubectl delete -f environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml
 ```
 
 ### 4-1-2. Remove echoserver namespace
@@ -198,7 +198,7 @@ $ kubectl delete namespace echoserver
 ## 4-2. Remove 2048
 ### 4-2-1. Remove echoserver ingress and ALB
 ```
-$ kubectl delete -f aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
+$ kubectl delete -f environment/aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml
 ```
 
 ### 4-2-2. Remove 2048 namespace
@@ -209,10 +209,10 @@ $ kubectl delete namespace 2048-game
 ## 4-3. Remove alb-ingress-controller related resources
 
 ```
-$ kubectl delete -f aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
+$ kubectl delete -f environment/aws-alb-ingress-controller/docs/examples/alb-ingress-controller.yaml
 ```
 
 ```
-$ kubectl delete -f aws-alb-ingress-controller/docs/examples/rbac-role.yaml
+$ kubectl delete -f environment/aws-alb-ingress-controller/docs/examples/rbac-role.yaml
 ```
 
