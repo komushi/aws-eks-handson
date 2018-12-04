@@ -43,3 +43,11 @@ $ helm registry --help
 Registry plugin assets do not exist, download them now !
 downloading https://github.com/app-registry/appr-cli/releases/download/v0.4.1/cnr-linux-x64 ...
 ```
+
+# 2. CleanUp
+
+```
+$ kubectl -n kube-system delete service tiller-deploy
+$ kubectl -n kube-system delete deployment tiller-deploy
+$ kubectl delete -f helm/rbac-config.yaml
+```

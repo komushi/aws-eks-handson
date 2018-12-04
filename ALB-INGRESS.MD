@@ -4,6 +4,7 @@
 $ mkdir environment
 $ cd ./environment
 $ git clone --depth=1 --branch=master https://github.com/kubernetes-sigs/aws-alb-ingress-controller.git && rm -rf aws-alb-ingress-controller/.git
+$ cd ..
 ```
 
 ## 1-2. Edit alb-ingress-controller.yaml
@@ -215,5 +216,3 @@ $ kubectl delete -f aws-alb-ingress-controller/docs/examples/alb-ingress-control
 $ kubectl delete -f aws-alb-ingress-controller/docs/examples/rbac-role.yaml
 ```
 
-
-# Credit: [Kubernetes Ingress with AWS ALB Ingress Controller](https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/)
