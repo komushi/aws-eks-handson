@@ -206,11 +206,9 @@ $ kubectl delete -f environment/ecsdemo-crystal/kubernetes/deployment.yaml
 
 $ kubectl delete -f environment/ecsdemo-nodejs/kubernetes/service.yaml
 $ kubectl delete -f environment/ecsdemo-nodejs/kubernetes/deployment.yaml
-
-$ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 ```
 
 **Check the deployment**
 ```
-$ kubectl get deployment, service
+$ kubectl get deployment,service
 ```

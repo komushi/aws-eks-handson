@@ -3,7 +3,7 @@
 # 1. Prerequsite
 ## 1-1. Clone this repo
 ```
-$ git clone https://gitlab.com/komushi/aws-eks-handson
+$ git clone https://gitlab.com/komushi/aws-eks-handson.git
 ```
 
 ## 1-2. Install/Upgrade kubectl
@@ -36,8 +36,11 @@ $ cat  ~/.kube/config
 ```
 
 **If no value retrieve it**
+**cluster-id:eks-workshop, region:us-east-1 or us-east-2**
 ```
 $ eksctl utils write-kubeconfig --name=eks-workshop --region=us-east-2
+
+$ eksctl utils write-kubeconfig --name=eks-workshop --region=us-east-1
 ```
 
 ## 2-2. Test the cluster

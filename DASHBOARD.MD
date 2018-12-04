@@ -115,3 +115,8 @@ $ heptio-authenticator-aws token -i eks-workshop
 [Dashboard URL](http://localhost:8888/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/)
 
 **Use the token created in 5 to access the dashboard**
+
+# 7. Clean-up when not needed
+```
+$ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+```
