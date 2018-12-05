@@ -1,4 +1,6 @@
-# 1. Apply NGINX ALB Ingress Controller for the Frontend
+# Workload via Workload via Application Load Balancer Ingress
+
+# 1. Deploy ALB Ingress Controller
 ## 1-1. Download aws-alb-ingress-controller to local
 ```
 $ mkdir environment
@@ -49,12 +51,15 @@ $ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ing
 ```
 
 ## 1-5. Create and Attach Instance Role Policy
+### 1-5-1. Create AlbIngressControllerPolicy
 ```
 $ aws iam create-policy --policy-name AlbIngressControllerPolicy --policy-document file://environment/aws-alb-ingress-controller/docs/examples/iam-policy.json
+```
 
+### 1-5-2. Attach the policy to the Node Instance Role
+**The Node Instance Role name can be found from the Cloudformation Stack**
+```
 $ aws iam attach-role-policy --role-name eksctl-eks-workshop-nodegroup-0-NodeInstanceRole-<your_node_instance_role> --policy-arn arn:aws:iam::<your_account_id>:policy/AlbIngressControllerPolicy
-
-$ aws iam attach-role-policy --role-name eksctl-eks-workshop-nodegroup-0-NodeInstanceRole-KLDDOWSB3DC4 --policy-arn arn:aws:iam::042083552617:policy/AlbIngressControllerPolicy
 ```
 
 # 2. Deploy workload resource - sample echoserver
@@ -96,7 +101,8 @@ $ eksctl get cluster eks-workshop --region=us-east-2
 
 
 ### 2-2-2. Edit ingress yaml
-**environment/aws-alb-ingress-controller/docs/examples/echoservices/echoserver-ingress.yaml**
+**environment/aws-alb-ingress-controller/docs/examples/echoservice/echoserver-ingress.yaml**
+**Use the public subnets from 2-2-1**
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -170,6 +176,7 @@ $ eksctl get cluster eks-workshop --region=us-east-2
 
 ## 3-2-2. Edit ingress yaml
 **environment/aws-alb-ingress-controller/docs/examples/2048/2048-ingress.yaml**
+**Use the public subnets from 3-2-1**
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
